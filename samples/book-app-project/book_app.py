@@ -50,6 +50,17 @@ def handle_remove():
     print("\nBook removed if it existed.\n")
 
 
+def handle_read():
+    print("\nMark a Book as Read\n")
+
+    title = input("Enter the title of the book to mark as read: ").strip()
+
+    if collection.mark_as_read(title):
+        print("\nBook marked as read.\n")
+    else:
+        print("\nBook not found.\n")
+
+
 def handle_find():
     print("\nFind Books by Author\n")
 
@@ -66,6 +77,7 @@ Book Collection Helper
 Commands:
   list     - Show all books
   add      - Add a new book
+  read     - Mark a book as read
   remove   - Remove a book by title
   find     - Find books by author
   help     - Show this help message
@@ -83,6 +95,8 @@ def main():
         handle_list()
     elif command == "add":
         handle_add()
+    elif command == "read":
+        handle_read()
     elif command == "remove":
         handle_remove()
     elif command == "find":
@@ -90,7 +104,7 @@ def main():
     elif command == "help":
         show_help()
     else:
-        print("Unknown command.\n")
+        print(f"Unknown command: {command}\n")
         show_help()
 
 
