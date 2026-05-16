@@ -1,6 +1,34 @@
+from datetime import datetime
 from typing import Sequence
 
 from books import Book
+
+
+def prompt_non_empty(field_name: str) -> str:
+    while True:
+        value = input(f"Enter {field_name}: ").strip()
+        if value:
+            return value
+
+        print(f"{field_name.capitalize()} cannot be empty.")
+
+
+def parse_year(year_input: str) -> int:
+    current_year = datetime.now().year
+    cleaned_year = year_input.strip()
+
+    if not cleaned_year:
+        raise ValueError("Publication year cannot be empty.")
+
+    try:
+        year = int(cleaned_year)
+    except ValueError as exc:
+        raise ValueError("Publication year must be a whole number.") from exc
+
+    if year < 0 or year > current_year:
+        raise ValueError(f"Publication year must be between 0 and {current_year}.")
+
+    return year
 
 
 def print_menu() -> None:
@@ -17,15 +45,16 @@ def get_user_choice() -> str:
 
 
 def get_book_details() -> tuple[str, str, int]:
-    title = input("Enter book title: ").strip()
-    author = input("Enter author: ").strip()
+    title = prompt_non_empty("book title")
+    author = prompt_non_empty("author")
 
-    year_input = input("Enter publication year: ").strip()
-    try:
-        year = int(year_input)
-    except ValueError:
-        print("Invalid year. Defaulting to 0.")
-        year = 0
+    while True:
+        year_input = input("Enter publication year: ").strip()
+        try:
+            year = parse_year(year_input)
+            break
+        except ValueError as error:
+            print(error)
 
     return title, author, year
 
