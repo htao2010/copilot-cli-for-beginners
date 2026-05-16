@@ -26,6 +26,35 @@ def test_add_book():
     assert book.year == 1949
     assert book.read is False
 
+
+def test_add_book_rejects_empty_title():
+    collection = BookCollection()
+
+    with pytest.raises(ValueError, match="Book title cannot be empty."):
+        collection.add_book("   ", "George Orwell", 1949)
+
+
+def test_add_book_rejects_empty_author():
+    collection = BookCollection()
+
+    with pytest.raises(ValueError, match="Author cannot be empty."):
+        collection.add_book("1984", "   ", 1949)
+
+
+def test_add_book_rejects_non_numeric_year():
+    collection = BookCollection()
+
+    with pytest.raises(ValueError, match="Publication year must be a whole number."):
+        collection.add_book("1984", "George Orwell", "1949")
+
+
+def test_add_book_rejects_out_of_range_year():
+    collection = BookCollection()
+
+    with pytest.raises(ValueError, match="Publication year must be between 0 and"):
+        collection.add_book("1984", "George Orwell", -1)
+
+
 def test_mark_book_as_read():
     collection = BookCollection()
     collection.add_book("Dune", "Frank Herbert", 1965)

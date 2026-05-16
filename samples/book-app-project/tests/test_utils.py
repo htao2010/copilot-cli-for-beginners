@@ -7,7 +7,7 @@ import pytest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from books import Book
-from utils import get_book_details, parse_year, print_books, prompt_non_empty
+from utils import get_book_details, get_user_choice, parse_year, print_books, prompt_non_empty
 
 
 def test_parse_year_returns_integer_for_valid_input():
@@ -51,6 +51,28 @@ def test_get_book_details_reprompts_until_year_is_valid(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert result == ("Dune", "Frank Herbert", 1965)
     assert "Publication year must be a whole number." in captured.out
+
+
+def test_get_user_choice_reprompts_until_non_empty_value_is_provided(monkeypatch, capsys):
+    responses = iter(["   ", "2"])
+    monkeypatch.setattr("builtins.input", lambda _: next(responses))
+
+    result = get_user_choice()
+
+    captured = capsys.readouterr()
+    assert result == "2"
+    assert "Menu choice cannot be empty." in captured.out
+
+
+def test_get_user_choice_reprompts_until_numeric_value_is_provided(monkeypatch, capsys):
+    responses = iter(["abc", "4"])
+    monkeypatch.setattr("builtins.input", lambda _: next(responses))
+
+    result = get_user_choice()
+
+    captured = capsys.readouterr()
+    assert result == "4"
+    assert "Menu choice must be a number." in captured.out
 
 
 def test_print_books_displays_empty_collection_message(capsys):

@@ -41,7 +41,18 @@ def print_menu() -> None:
 
 
 def get_user_choice() -> str:
-    return input("Choose an option (1-5): ").strip()
+    while True:
+        choice = input("Choose an option (1-5): ").strip()
+
+        if not choice:
+            print("Menu choice cannot be empty.")
+            continue
+
+        if not choice.isdigit():
+            print("Menu choice must be a number.")
+            continue
+
+        return choice
 
 
 def get_book_details() -> tuple[str, str, int]:
