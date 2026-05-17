@@ -56,6 +56,17 @@ def get_user_choice() -> str:
 
 
 def get_book_details() -> tuple[str, str, int]:
+    """Prompt the user for the details needed to create a book entry.
+
+    Args:
+        None: This function does not accept direct parameters. It gathers the
+            required values interactively by prompting the user for a title,
+            author, and publication year.
+
+    Returns:
+        tuple[str, str, int]: A three-item tuple containing the book title,
+            author name, and validated publication year, in that order.
+    """
     title = prompt_non_empty("book title")
     author = prompt_non_empty("author")
 
