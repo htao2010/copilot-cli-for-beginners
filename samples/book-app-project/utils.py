@@ -4,9 +4,16 @@ from typing import Sequence
 from books import Book
 
 
+def _read_input(prompt: str) -> str:
+    try:
+        return input(prompt)
+    except (EOFError, KeyboardInterrupt) as exc:
+        raise SystemExit("Input cancelled. Please try again when you're ready.") from exc
+
+
 def prompt_non_empty(field_name: str) -> str:
     while True:
-        value = input(f"Enter {field_name}: ").strip()
+        value = _read_input(f"Enter {field_name}: ").strip()
         if value:
             return value
 
@@ -15,6 +22,10 @@ def prompt_non_empty(field_name: str) -> str:
 
 def parse_year(year_input: str) -> int:
     current_year = datetime.now().year
+
+    if not isinstance(year_input, str):
+        raise ValueError("Publication year must be provided as text.")
+
     cleaned_year = year_input.strip()
 
     if not cleaned_year:
@@ -42,7 +53,7 @@ def print_menu() -> None:
 
 def get_user_choice() -> str:
     while True:
-        choice = input("Choose an option (1-5): ").strip()
+        choice = _read_input("Choose an option (1-5): ").strip()
 
         if not choice:
             print("Menu choice cannot be empty.")
@@ -50,6 +61,10 @@ def get_user_choice() -> str:
 
         if not choice.isdigit():
             print("Menu choice must be a number.")
+            continue
+
+        if choice not in {"1", "2", "3", "4", "5"}:
+            print("Menu choice must be between 1 and 5.")
             continue
 
         return choice
@@ -71,7 +86,7 @@ def get_book_details() -> tuple[str, str, int]:
     author = prompt_non_empty("author")
 
     while True:
-        year_input = input("Enter publication year: ").strip()
+        year_input = _read_input("Enter publication year: ")
         try:
             year = parse_year(year_input)
             break

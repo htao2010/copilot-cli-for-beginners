@@ -24,6 +24,11 @@ def test_parse_year_rejects_non_numeric_input():
         parse_year("nineteen eighty four")
 
 
+def test_parse_year_rejects_non_string_input():
+    with pytest.raises(ValueError, match="provided as text"):
+        parse_year(None)
+
+
 def test_parse_year_rejects_out_of_range_input():
     next_year = datetime.now().year + 1
 
@@ -73,6 +78,27 @@ def test_get_user_choice_reprompts_until_numeric_value_is_provided(monkeypatch, 
     captured = capsys.readouterr()
     assert result == "4"
     assert "Menu choice must be a number." in captured.out
+
+
+def test_get_user_choice_reprompts_until_choice_is_in_range(monkeypatch, capsys):
+    responses = iter(["6", "5"])
+    monkeypatch.setattr("builtins.input", lambda _: next(responses))
+
+    result = get_user_choice()
+
+    captured = capsys.readouterr()
+    assert result == "5"
+    assert "Menu choice must be between 1 and 5." in captured.out
+
+
+def test_prompt_non_empty_exits_cleanly_when_input_is_cancelled(monkeypatch):
+    def raise_keyboard_interrupt(_: str) -> str:
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr("builtins.input", raise_keyboard_interrupt)
+
+    with pytest.raises(SystemExit, match="Input cancelled"):
+        prompt_non_empty("book title")
 
 
 def test_print_books_displays_empty_collection_message(capsys):
